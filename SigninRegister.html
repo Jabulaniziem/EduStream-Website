@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>EduStream — Sign In & Register | Cloud PaaS for SA Schools</title>
+  <link rel="icon" type="image/png" href="Images\cloud-computing logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Reset and base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0d1f3c;
+      color: #1a2c3e;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Fixed animated background */
+    .animated-bg-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    canvas#skyBg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Header - solid background on top of canvas */
+    .site-header {
+      position: relative;
+      z-index: 20;
+      background: #0A2A38;
+      padding: 18px 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cloud-logo {
+      font-size: 28px;
+      color: #5bc0be;
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text span {
+      color: #5bc0be;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .main-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      padding: 8px 0;
+    }
+
+    .main-nav a:hover,
+    .main-nav a.active {
+      color: #5bc0be;
+    }
+
+    /* Sign In & Register Section */
+    .auth-section {
+      position: relative;
+      z-index: 10;
+      padding: 80px 0;
+      min-height: calc(100vh - 300px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-container {
+      max-width: 580px;
+      width: 90%;
+      margin: 0 auto;
+    }
+
+    /* Auth Card */
+    .auth-card {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(12px);
+      border-radius: 40px;
+      padding: 52px 48px;
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .auth-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 40px 70px -20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Welcome Header - MOVED TO TOP OF BUTTONS */
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .welcome-icon {
+      font-size: 3rem;
+      color: #5bc0be;
+      background: rgba(224, 242, 233, 0.9);
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 20px rgba(91,192,190,0.2);
+    }
+
+    .welcome-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0A2A38;
+      margin-bottom: 8px;
+    }
+
+    .welcome-header p {
+      color: #5a6e7e;
+      font-size: 0.9rem;
+    }
+
+    /* Auth Tabs - Now below welcome header */
+    .auth-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      background: rgba(241, 245, 249, 0.9);
+      padding: 8px;
+      border-radius: 60px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      color: #4a5c6b;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: #5bc0be;
+      color: #0A2A38;
+      box-shadow: 0 4px 12px rgba(91,192,190,0.4);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(226, 232, 240, 0.9);
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #0A2A38;
+      font-size: 0.9rem;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: 20px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: #5bc0be;
+      box-shadow: 0 0 0 4px rgba(91,192,190,0.2);
+      background: white;
+    }
+
+    /* Sign In Button - DARK BLUE HOVER */
+    .auth-btn {
+      width: 100%;
+      background: #5bc0be;
+      color: #0A2A38;
+      border: none;
+      padding: 15px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 12px;
+    }
+
+    .auth-btn:hover {
+      background: #0A2A38;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(10,42,56,0.4);
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(238, 242, 245, 0.9);
+      font-size: 0.9rem;
+      color: #4a5c6b;
+    }
+
+    .form-footer a {
+      color: #5bc0be;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .site-footer {
+      position: relative;
+      z-index: 20;
+      background: #0A2A38;
+      color: #cbd9e2;
+      padding: 56px 0 24px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 48px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h4 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col li {
+      margin-bottom: 12px;
+    }
+
+    .footer-col a {
+      color: #cbd9e2;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .footer-col a:hover {
+      color: #5bc0be;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid #1e4a5c;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 20px;
+      }
+      .auth-card {
+        padding: 36px 28px;
+      }
+      .welcome-header h2 {
+        font-size: 1.5rem;
+      }
+      .welcome-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 2.2rem;
+      }
+      .tab-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: 28px 20px;
+      }
+      .welcome-header h2 {
+        font-size: 1.3rem;
+      }
+      .input-group input,
+      .input-group select {
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed animated cloud sky background (full screen) -->
+  <canvas id="skyBg" class="animated-bg-fixed"></canvas>
+
+ <header class="site-header" style="position:sticky;z-index:100;">
+    <div class="container header-flex">
+      <div class="logo-area">
+        <i class="fas fa-cloud-upload-alt cloud-logo"></i>
+        <span class="logo-text">Edu<span>Stream</span></span>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="SigninRegister.html" class="active">Sign In</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="auth-section">
+      <div class="auth-container">
+        <div class="auth-card">
+          <!-- Welcome Header - MOVED TO TOP OF BUTTONS -->
+          <div class="welcome-header">
+            <div class="welcome-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h2>Welcome to EduStream</h2>
+            <p>Your cloud platform for digital education in South Africa</p>
+          </div>
+
+          <!-- Auth Tabs - Below Welcome Header -->
+          <div class="auth-tabs">
+            <button class="tab-btn active" id="signinTab">Sign In</button>
+            <button class="tab-btn" id="registerTab">Register</button>
+          </div>
+
+          <!-- Sign In Form -->
+          <div class="auth-form active" id="signinForm">
+            <div class="input-group">
+              <label>Email address</label>
+              <input type="email" id="signinEmail" placeholder="admin@school.co.za" required>
+            </div>
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" id="signinPassword" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="auth-btn" id="signinBtn">Sign In →</button>
+            <div class="form-footer">
+              <a href="#" id="switchToRegister">Don't have an account? Create one →</a>
+            </div>
+          </div>
+
+          <!-- Register Form -->
+          <div class="auth-form" id="registerForm">
+            <div class="input-group">
+              <label>School name</label>
+              <input type="text" id="schoolName" placeholder="e.g., Soweto Academy" required>
+            </div>
+            <div class="input-group">
+              <label>School email</label>
+              <input type="email" id="registerEmail" placeholder="admin@school.co.za" required>
+            </div>
+            <div class="input-group">
+              <label>Phone number</label>
+              <input type="tel" id="phone" placeholder="+27 82 123 4567">
+            </div>
+            <div class="input-group">
+              <label>Password</label>
+              <input type="password" id="registerPassword" placeholder="Create a password" required>
+            </div>
+            <div class="input-group">
+              <label>Select your plan</label>
+              <select id="planSelect">
+                <option value="Starter">Starter — R899/month (up to 10 teachers, 300 students)</option>
+                <option value="Pro School">Pro School — R2,299/month (unlimited teachers, 2,000 students)</option>
+                <option value="District+">District+ — R4,999/month (unlimited teachers, unlimited students)</option>
+              </select>
+            </div>
+            <button type="submit" class="auth-btn" id="registerBtn">Start 14-day free trial →</button>
+            <div class="form-footer">
+              <a href="#" id="switchToSignin">Already have an account? Sign In →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>EduStream</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="register.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="mailto:help@edustream.co.za">help@edustream.co.za</a></li>
+            <li><a href="#">+27 87 550 1234</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">POPIA Compliance</a></li>
+            <li><a href="#">Terms</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="https://www.education.gov.za" target="_blank">Department of Basic Education →</a></li>
+            <li><a href="https://www.sace.org.za" target="_blank">SACE Resources →</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 EduStream (Pty) Ltd — Building future-ready classrooms in SA. All amounts in ZAR.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Animated cloud sky background script -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('skyBg');
+      const ctx = canvas.getContext('2d');
+      let W, H, clouds, stars;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        drawStars();
+        createClouds();
+      }
+
+      function drawStars() {
+        stars = [];
+        for (let i = 0; i < 200; i++) {
+          stars.push({
+            x: Math.random() * W,
+            y: Math.random() * H * 0.6,
+            r: Math.random() * 1.8 + 0.5,
+            a: Math.random() * 0.7 + 0.3,
+            twinkle: Math.random() * 0.05 + 0.02
+          });
+        }
+      }
+
+      function createClouds() {
+        clouds = [
+          {x:W*0.02, y:H*0.10, s:70, speed:0.18, color:'rgba(221,238,248,0.85)'},
+          {x:W*0.28, y:H*0.18, s:48, speed:0.12, color:'rgba(204,229,244,0.8)'},
+          {x:W*0.55, y:H*0.08, s:85, speed:0.24, color:'rgba(226,241,249,0.85)'},
+          {x:W*0.80, y:H*0.22, s:55, speed:0.15, color:'rgba(187,218,236,0.8)'},
+          {x:W*0.45, y:H*0.32, s:40, speed:0.09, color:'rgba(168,206,223,0.75)'},
+          {x:W*0.12, y:H*0.38, s:35, speed:0.07, color:'rgba(151,194,214,0.75)'},
+          {x:W*0.72, y:H*0.40, s:42, speed:0.10, color:'rgba(136,184,204,0.7)'},
+          {x:W*1.10, y:H*0.15, s:65, speed:0.20, color:'rgba(208,232,245,0.8)'},
+          {x:W*-0.25, y:H*0.25, s:52, speed:0.14, color:'rgba(200,225,240,0.75)'},
+          {x:W*0.95, y:H*0.48, s:38, speed:0.08, color:'rgba(120,170,190,0.65)'}
+        ];
+      }
+
+      function drawCloudShape(x, y, s, color) {
+        const puffs = [
+          [0, 0, s],
+          [s*1.15, s*0.12, s*0.78],
+          [-s*1.15, s*0.12, s*0.78],
+          [s*0.58, -s*0.58, s*0.65],
+          [-s*0.58, -s*0.58, s*0.65],
+          [0, -s*0.75, s*0.52],
+          [s*0.85, -s*0.3, s*0.48],
+          [-s*0.85, -s*0.3, s*0.48]
+        ];
+        ctx.fillStyle = color;
+        ctx.shadowColor = 'rgba(255,255,255,0.5)';
+        ctx.shadowBlur = 15;
+        puffs.forEach(([px, py, pr]) => {
+          ctx.beginPath();
+          ctx.arc(x + px, y + py, pr, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.shadowBlur = 0;
+      }
+
+      function drawSky() {
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, '#0a1a33');
+        grad.addColorStop(0.2, '#123553');
+        grad.addColorStop(0.45, '#1f5a7a');
+        grad.addColorStop(0.7, '#3a9b9a');
+        grad.addColorStop(1, '#7fcdcd');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      function animate() {
+        drawSky();
+
+        stars.forEach(s => {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          const twinkleOpacity = s.a + Math.sin(Date.now() * s.twinkle) * 0.2;
+          ctx.fillStyle = `rgba(255,255,240,${Math.min(0.9, Math.max(0.2, twinkleOpacity))})`;
+          ctx.fill();
+        });
+
+        clouds.forEach(c => {
+          drawCloudShape(c.x, c.y, c.s, c.color);
+          c.x += c.speed;
+          if (c.x - c.s * 2.5 > W) {
+            c.x = -c.s * 2;
+            c.y = Math.random() * H * 0.55;
+          }
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      resize();
+      animate();
+      window.addEventListener('resize', () => { resize(); });
+    })();
+  </script>
+
+  <script>
+    // Tab switching
+    const signinTab = document.getElementById('signinTab');
+    const registerTab = document.getElementById('registerTab');
+    const signinFormDiv = document.getElementById('signinForm');
+    const registerFormDiv = document.getElementById('registerForm');
+
+    signinTab.addEventListener('click', function() {
+      signinTab.classList.add('active');
+      registerTab.classList.remove('active');
+      signinFormDiv.classList.add('active');
+      registerFormDiv.classList.remove('active');
+    });
+
+    registerTab.addEventListener('click', function() {
+      registerTab.classList.add('active');
+      signinTab.classList.remove('active');
+      registerFormDiv.classList.add('active');
+      signinFormDiv.classList.remove('active');
+    });
+
+    document.getElementById('switchToRegister').addEventListener('click', function(e) {
+      e.preventDefault();
+      registerTab.click();
+    });
+
+    document.getElementById('switchToSignin').addEventListener('click', function(e) {
+      e.preventDefault();
+      signinTab.click();
+    });
+
+    // Sign In handler with dark blue hover effect
+    document.getElementById('signinBtn').addEventListener('click', function() {
+      const email = document.getElementById('signinEmail').value.trim();
+      const password = document.getElementById('signinPassword').value;
+      
+      if (email && password) {
+        if (email.includes('@')) {
+          alert(`Welcome back! Redirecting to dashboard...`);
+        } else {
+          alert('Please enter a valid email address.');
+        }
+      } else {
+        alert('Please fill in both email and password.');
+      }
+    });
+
+    // Register handler
+    document.getElementById('registerBtn').addEventListener('click', function() {
+      const school = document.getElementById('schoolName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      const plan = document.getElementById('planSelect').value;
+      
+      if (school && email && password) {
+        if (email.includes('@')) {
+          alert(`✅ Thank you ${school}! Your 14-day free trial for ${plan} has been requested. We've sent a confirmation to ${email}. Your EduStream portal will be ready within 24 hours.`);
+          document.getElementById('schoolName').value = '';
+          document.getElementById('registerEmail').value = '';
+          document.getElementById('registerPassword').value = '';
+          document.getElementById('phone').value = '';
+        } else {
+          alert('Please enter a valid email address.');
+        }
+      } else {
+        alert('Please fill in school name, email, and password.');
+      }
+    });
+  </script>
+
+</body>
+</html>
